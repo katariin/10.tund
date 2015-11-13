@@ -157,7 +157,7 @@ class interestManager{
 					*/
 					
 					$hmtl .='</select>';
-			
+			}
 			$stmt->close();
 			
 			//$first_name =
@@ -170,20 +170,20 @@ class interestManager{
 			
 			return $response;
 			
-		}
+		 }
 	    function getUserinterests($user_id){
 			
 			
 			$html = '';
 			
 			// punk liidab juurde
-			$hmtl .='<select name="dropdownselect">';
+			//$hmtl .='<select name="dropdownselect">';
 			
 			$stmt = $this->connection->prepare("SELECT interests.name FROM user_interests INNER JOIN user_interests ON interests.id=user_interests_id WHERE user_interests.user_id =?");
 			$stmt->bind_result("i", $user_id);
 			$stmt->bind_result($name);
 			$stmt->execute;
-		}	
+		
 			
 			//iga rea kohjta teen midagi
 			while($stmt->fetch()){
@@ -191,9 +191,9 @@ class interestManager{
 			   	$hmtl .= $name." ";
 			}
      
-           return $html;	 
+            return $html;	 
 		
-		
+		}	
 		
 		
 	
