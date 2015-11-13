@@ -29,6 +29,15 @@
 	   
 	   
    }
+   
+       
+     if(isset($GET["dropdownselect"])) {
+	   
+	   //saadan valiku id ja kasutaja id
+	   $added_interest= $interestManager->addinterest($_GET["dropdownselect"], $SESSION["id_from_db"]);
+	   
+	   
+     }   
 	   
 		  //FILE UPLOAD
 		  
@@ -98,40 +107,50 @@
 
 
 
-<h2>Profiilipilt</h2>
-
-  <?php if(file_exists($target_file)): ?>
+<h2>Lisa uus huviala</h2>
+ <?php if(isset($added_interest->error)): ?>
   
-  <div=style ="
-          width:200px;
-		  height:200px;
-		  background-image: url(<?=$target_file;?>);
-		  background-position:center center;
-		  background-size: cover;
-  "></div>
+	<p style="color:red;">
+		<?=$added_interest->error->message;?>
+	</p>
   
-  <img width=200 height=200 src="<?=$target_file;?>
-
-  <?php else: ?>
+  <?php elseif(isset($added_interest->success)): ?>
   
-  <p style="color:green"></p>
+	<p style="color:green;">
+		<?=$added_interest->success->message;?>
+	</p>
   
- <?php endif; ?>
-  
-<form action="data.php" method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit">
+  <?php endif; ?>  
+<form>
+	<input name="new_interest">
+	<input type="submit">
 </form>
-
 
 
 <h2>Minu huvialad</h2>
 
+<?php if(isset($added_user_interest->error)): ?>
+  
+	<p style="color:red;">
+		<?=$added_user_interest->error->message;?>
+	</p>
+  
+  <?php elseif(isset($added_user_interest->success)): ?>
+  
+	<p style="color:green;">
+		<?=$added_user_interest->success->message;?>
+	</p>
+  
+  <?php endif; ?>  
 <form>
-<!-- Siia tuleb rippmenüü-->
-<?php echo $interestManager->createDropdown(); ?>
+	<!-- SIIA TULEB RIPPMENÜÜ -->
+	<?php echo $InterestManager->createDropdown();?>
+	<input type="submit">
 </form>
+
+
+
+<p><?php echo $InterestManager->getUserinterests($_SESSION["id_from_db"]);?></p>
 
 
 
