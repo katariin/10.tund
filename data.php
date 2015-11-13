@@ -1,11 +1,15 @@
 <?php
    //laeme funktsiooni failis
    require_once("function.php");
+   require_once("interestManager.class.php");
    
    // kas kasutaja on sisse loginud
    if(!isset($_SESSION["id_from_db"])) {
 	   //suudan data lehel
 	   header("Location: login.php");
+	   
+	   exit();
+	   
    }
    //login välja
    if(isset($_GET["logout"])){
@@ -14,6 +18,15 @@
 	   
 	   
 	   header("Location: login.php");
+	   
+   }
+   $inerestManager = new interestManager($mysqli);
+   
+   
+   if(isset($GET["new_interest"])) {
+	   
+	   $added_interest= $interestManager->addinterest($_GET["new_interest"]);
+	   
 	   
    }
 	   
@@ -74,6 +87,17 @@
   <a href= "?logout=1" >Logi välja</a>
 </p>
 
+
+
+<h2>Lisa uus huviala</h2>
+<form>
+     <input name="new_inerest">
+	 <input type="submit">
+</form>
+
+
+
+
 <h2>Profiilipilt</h2>
 
   <?php if(file_exists($target_file)): ?>
@@ -92,7 +116,8 @@
   
   <p style="color:green"></p>
   
-
+ <?php endif; ?>
+  
 <form action="data.php" method="post" enctype="multipart/form-data">
     Select image to upload:
     <input type="file" name="fileToUpload" id="fileToUpload">
@@ -100,4 +125,22 @@
 </form>
 
 
-  <?php endif; ?>
+
+<h2>Minu huvialad</h2>
+
+<form>
+<!-- Siia tuleb rippmenüü-->
+<?php echo $interestManager->createDropdown(); ?>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+

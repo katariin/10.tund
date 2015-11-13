@@ -1,71 +1,59 @@
 <?php
-
-
 class User {
 	
-	     //privaatne muutuja
-		 private $connection;
-		   
-		 //funktsioon, mis käivitub siis, kui
-          // on ! NEW User();
-
-         function __construct($mysqli){
-			 
-			 // see connection on uut muutuja 
-			 //selle classi muutuja
-			 $this->connection = $mysqli;
-			 
-		 }		  
-		   
-		function createUser($create_email, $password_hash){ {
-
-         // teen objekti, et saada tagasi  kas errori(id, message) või successi (message)
-        $response = new StdClass();		 
+	//privaatne muutuja, saan kasutada klassi sees
+	private $connection;
+	
+	//funktsioon, mis käivitub siis kui
+	// on ! NEW User();
+	function __construct($mysqli){
 		
-		//kas selline email on juba olemas
+		// selle klassi muutuja
+		$this->connection = $mysqli;
+	}
+	
+	function createUser($create_email, $password_hash){
+		
+		//teen objekti, et saata tagasi kas errori (id, message) või successi (message) 
+		$response = new StdClass();
+		//kas selline email on juba olemas?
 		$stmt = $this->connection->prepare("SELECT email FROM user_sample WHERE email = ?");
 		$stmt->bind_param("s", $create_email);
 		$stmt->execute();
 		
-		if ($stmt->fetch()) {
+		//kas oli 1 rida andmeid
+		if($stmt->fetch()){
 			
-			//saadan tagasi errori
+			// saadan tagasi errori
 			$error = new StdClass();
-			$error->id=0;
-			$error->message = "Selline e-postiga kasutaja on juba olemas";
+			$error->id = 0;
+			$error->message = "Sellise e-postiga kasutaja juba olemas!";
 			
-			//panen error responsile külge
-			$response->essror = $error;
+			//panen errori responsile külge
+			$response->error = $error;
 			
+			// pärast returni enam koodi edasi ei vaadata funktsioonis
 			return $response;
 			
-			//*************************
-			//****OLULINE***********
-			//**********************
-			//panen eelmise käsu kinni
-			$stmt->close();
-			
 		}
-		 
-			
+	
+		//*************************
+		//******* OLULINE *********
+		//*************************
+		//panen eelmise käsu kinni
+		$stmt->close();
+	
 		$stmt = $this->connection->prepare("INSERT INTO user_sample (email, password) VALUES (?, ?)");
 		$stmt->bind_param("ss", $create_email, $password_hash);
 		
-		
 		if($stmt->execute()){
-			//educalt salvestas
+			// edukalt salvestas
 			$success = new StdClass();
-			$success ->message = "Kasutaja edukalt salvestanud";
-			
-			$user = new StdClass();
-			$user->id=$id_from_db;
-			$user->email=$email_from_db;
-			
-			$success->user = $user;
+			$success->message = "Kasutaja edukalt salvestatud";
 			
 			$response->success = $success;
-		
-        }else{
+			
+		}else{
 			// midagi läks katki
 			$error = new StdClass();
 			$error->id =1;
@@ -75,27 +63,21 @@ class User {
 			$response->error = $error;
 		}
 		
-		}
-		//saada tagasi vastuse, kas success või error
-		
 		$stmt->close();
 		
+		//saada tagasi vastuse, kas success või error
 		return $response;
+	
+	}
+	
+	function loginUser($email, $password_hash){
 		
-		
-				
-	}  
-		   
-		function loginUser($email, $password_hash){
-		
-
-		 $response = new StdClass();		
-		
-		$stmt = $this->connection->prepare("SELECT id, email FROM user_sample WHERE email=? AND password=?");
-		$stmt->bind_param("ss", $email, $password_hash);
-		$stmt->bind_result($id_from_db, $email_from_db);
+		$response = new StdClass();
+		//kas selline email on juba olemas?
+		$stmt = $this->connection->prepare("SELECT email FROM user_sample WHERE email = ?");
+		$stmt->bind_param("s", $email);
 		$stmt->execute();
-		   
+		
 		// ei ole sellist kasutajat - !
 		if(!$stmt->fetch()){
 			
@@ -107,11 +89,11 @@ class User {
 			//panen errori responsile külge
 			$response->error = $error;
 			
+			// pärast returni enam koodi edasi ei vaadata funktsioonis
 			return $response;
+			
 		}
-		
-		// pärast returni enam koodi edasi ei vaadata funktsiooni
-		
+	
 		$stmt->close();
 		
 		$stmt = $this->connection->prepare("SELECT id, email FROM user_sample WHERE email=? AND password=?");
@@ -122,6 +104,12 @@ class User {
 			// edukalt sai kätte
 			$success = new StdClass();
 			$success->message = "Kasutaja edukalt sisse logitud";
+			
+			$user = new StdClass();
+			$user->id = $id_from_db;
+			$user->email = $email_from_db;
+			
+			$success->user = $user;
 			
 			$response->success = $success;
 			
@@ -139,10 +127,5 @@ class User {
 		
 		return $response;
 	}
-}?>
-
-
-
-
-
-
+	
+} ?>

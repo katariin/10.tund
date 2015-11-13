@@ -130,6 +130,20 @@
 <html>
 <head>
   <title>Login</title>
+    <?php if(isset($login_response->error)): ?>
+  
+	<p style="color:red;">
+		<?=$login_response->error->message;?>
+	</p>
+  
+  <?php elseif(isset($login_response->success)): ?>
+  
+	<p style="color:green;">
+		<?=$login_response->success->message;?>
+	</p>
+  
+  <?php endif; ?>
+  
 </head>
 <body>
 
@@ -155,7 +169,7 @@
   <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" >
   	E-mail: <input name="create_email" type="email" placeholder="E-post"> <?php echo $create_email_error; ?>*<br><br>
   	Parool: <input name="create_password" type="password" placeholder="Parool"> <?php echo $create_password_error; ?>*<br><br>
-	FirsName: <input name="firstname" type="name" placeholder="First name"> <?php echo $firstname_error; ?>*<br><br>
+	FirstName: <input name="firstname" type="name" placeholder="First name"> <?php echo $firstname_error; ?>*<br><br>
 	LastName:<input name="lastname" type="name" placeholder="Last name"> <?php echo $lastname_error; ?>*<br><br>
   	<input type="submit" name="create" value="Create user">
   </form>
