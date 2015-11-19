@@ -5,7 +5,7 @@
 		
 		$database = "if15_jekavor";
 		
-		//session_start();
+		session_start();
 		
         $mysqli = new mysqli($servername, $server_username, $server_password, $database);
 
@@ -14,5 +14,5 @@
 		
 		//var_dump($User_connection);
 				
-?>		
+?>	
 	
